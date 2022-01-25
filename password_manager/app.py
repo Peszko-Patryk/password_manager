@@ -17,10 +17,10 @@ from wtforms import StringField, PasswordField, BooleanField, EmailField
 from wtforms.validators import InputRequired, Email, Length, ValidationError, DataRequired, EqualTo
 from werkzeug.security import generate_password_hash, check_password_hash
 
-# import sqlite3
-#
-# con  = sqlite3.connect('database.db')
-# con.cursor()
+import sqlite3
+
+con  = sqlite3.connect('database.db')
+con.cursor()
 
 app = Flask(__name__)
 app.config['MAIL_SERVER'] = 'smtp.mailtrap.io'
@@ -243,7 +243,6 @@ def forgot_password():
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     form = ResetPasswordForm()
-    print(token)
 
     if form.validate_on_submit():
         user = User.verify_reset_token(token)
