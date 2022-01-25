@@ -6,7 +6,7 @@ from time import time, sleep
 import jwt
 from Crypto.Cipher import AES
 from flask_mail import Mail, Message
-from flask import Flask, render_template, url_for, flash, request
+from flask import Flask, render_template, url_for, request
 from flask_bootstrap import Bootstrap
 from Crypto.Util.Padding import pad, unpad
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
@@ -152,7 +152,8 @@ class ForgotPasswordForm(FlaskForm):
 
 
 class ResetPasswordForm(FlaskForm):
-    new_password = PasswordField('New password', validators=[DataRequired(), Length(min=8, max=50)])
+    new_password = PasswordField('New password', validators=[DataRequired(), Length(min=8, max=50),
+                                                     EqualTo('confirm_new_password', message='Passwords must match')])
     confirm_new_password = PasswordField('Repeat Password')
 
 
@@ -242,6 +243,7 @@ def forgot_password():
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
     form = ResetPasswordForm()
+    print(token)
 
     if form.validate_on_submit():
         user = User.verify_reset_token(token)
