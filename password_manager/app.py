@@ -144,7 +144,7 @@ class SignUpForm(FlaskForm):
                                              check_if_email_already_in_database])
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=50),
                                                      EqualTo('confirm_new_password', message='Passwords must match')])
-    confirm = PasswordField('Repeat Password')
+    confirm_new_password = PasswordField('Repeat Password')
 
 
 class ForgotPasswordForm(FlaskForm):
