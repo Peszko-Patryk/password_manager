@@ -19,7 +19,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 import sqlite3
 
-con  = sqlite3.connect('database.db')
+con = sqlite3.connect('database.db')
 con.cursor()
 
 app = Flask(__name__)
@@ -134,12 +134,14 @@ class LogInForm(FlaskForm):
 class ChangePasswordForm(FlaskForm):
     old_password = PasswordField('Current password', validators=[InputRequired(), Length(min=8, max=50)])
     new_password = PasswordField('New Password', validators=[InputRequired(), Length(min=8, max=50),
-                                                             EqualTo('confirm_new_password', message='New passwords must match')])
+                                                             EqualTo('confirm_new_password',
+                                                                     message='New passwords must match')])
     confirm_new_password = PasswordField('Repeat New Password')
 
 
 class SignUpForm(FlaskForm):
-    username = StringField('Username', validators=[InputRequired(), Length(min=4, max=15), check_if_username_already_in_database])
+    username = StringField('Username',
+                           validators=[InputRequired(), Length(min=4, max=15), check_if_username_already_in_database])
     email = StringField('Email', validators=[InputRequired(), Email(message='Invalid email'), Length(max=50),
                                              check_if_email_already_in_database])
     password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=50),
@@ -153,7 +155,8 @@ class ForgotPasswordForm(FlaskForm):
 
 class ResetPasswordForm(FlaskForm):
     new_password = PasswordField('New password', validators=[DataRequired(), Length(min=8, max=50),
-                                                     EqualTo('confirm_new_password', message='Passwords must match')])
+                                                             EqualTo('confirm_new_password',
+                                                                     message='Passwords must match')])
     confirm_new_password = PasswordField('Repeat Password')
 
 
@@ -290,9 +293,10 @@ def update():
 @app.route('/delete/<id>/', methods=['GET', 'POST'])
 @login_required
 def delete(id):
-    my_data = Passwords.query.get(id)
-    db.session.delete(my_data)
-    db.session.commit()
+    delete_row = Passwords.query.get(id)
+    if current_user.id == delete_row.user_id:
+        db.session.delete(delete_row)
+        db.session.commit()
     return redirect(url_for('dashboard'))
 
 
